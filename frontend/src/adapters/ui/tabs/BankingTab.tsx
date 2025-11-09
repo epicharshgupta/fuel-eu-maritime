@@ -35,7 +35,7 @@ const BankingTab: React.FC = () => {
       setMessage(res.data.message);
     } catch (err) {
       console.error(err);
-      setMessage("Failed to bank surplus");
+      setMessage("Failed in bank surplus");
     }
   };
 
