@@ -33,7 +33,7 @@ const PoolingTab: React.FC = () => {
     try {
       const res = await api.post("/pools", { year, members });
       setResult(res.data);
-      setMessage("Pool created successfully!");
+      setMessage("Pool creation success!");
     } catch (err: any) {
       console.error("Error creating pool:", err);
       const msg =
