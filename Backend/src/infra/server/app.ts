@@ -7,7 +7,7 @@ import complianceRouter from "../../adapters/inbound/http/complianceRouter";
 import poolingRouter from "../../adapters/inbound/http/poolingRouter";
 
 
-dotenv.config(); // ✅ loads .env variables
+dotenv.config(); // ✅ loads .env variables //add variables
 
 const app = express();
 
