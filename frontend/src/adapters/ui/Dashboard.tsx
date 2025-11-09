@@ -21,7 +21,7 @@ const Dashboard: React.FC = () => {
       </h1>
 
       <div className="flex justify-center gap-4 mb-6">
-        {tabs.map((tab) => (
+        {tabs.map((tab) => (//mapping on tabs
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
