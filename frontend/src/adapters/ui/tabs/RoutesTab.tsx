@@ -28,7 +28,7 @@ const RoutesTab: React.FC = () => {
     }
   };
 
-  const setBaseline = async (id: number) => {
+  const setBaseline = async (id: number) => {//baseline and fetch routes
     await api.post(`/routes/${id}/baseline`);
     fetchRoutes();
   };
