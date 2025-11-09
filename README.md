@@ -1,333 +1,226 @@
-⚓ FuelEU Maritime — Full-Stack Compliance Platform
+# ⚓ FuelEU Maritime — Full-Stack Compliance Platform
 
-FuelEU Maritime — Full-Stack Developer Assignment
-A minimal, well-structured implementation of a Fuel EU Maritime compliance module with a React + TypeScript frontend and a Node.js + TypeScript + PostgreSQL backend using Hexagonal (Ports & Adapters) architecture.
+### 🚀 Full-Stack Developer Assignment (FuelEU Maritime)
 
-Table of contents
+This project implements a **FuelEU Maritime Compliance Platform** with a structured **React + TypeScript + Node.js + PostgreSQL** stack following **Hexagonal (Ports & Adapters)** architecture.
 
-Project overview
+It demonstrates how to build an end-to-end compliance system handling:
+- Route management  
+- Emissions comparison  
+- Compliance balance (CB) computation  
+- Banking and pooling features (Articles 20 & 21 of FuelEU regulation)  
 
-Architecture
+---
 
-Features
+## 🧭 Table of Contents
+- [Overview](#-overview)
+- [Architecture](#-architecture)
+- [Features](#-features)
+- [Tech Stack](#-tech-stack)
+- [Setup — Backend](#-setup--backend)
+- [Setup — Frontend](#-setup--frontend)
+- [Database & Prisma](#-database--prisma)
+- [API Reference](#-api-reference)
+- [Testing](#-testing)
+- [Project Structure](#-project-structure)
+- [Future Improvements](#-future-improvements)
+- [Author](#-author)
 
-Tech stack
+---
 
-Getting started — prerequisites
+## 🌍 Overview
 
-Setup & run — Backend
+**FuelEU Maritime** is designed to assess shipping routes' greenhouse gas (GHG) intensity and ensure compliance with FuelEU emission targets.
 
-Setup & run — Frontend
+The platform includes:
+- A REST API for route management, compliance calculations, and pooling logic.  
+- A React dashboard visualizing compliance data through tables and charts.
 
-Database & Prisma
+---
 
-API reference (quick)
+## 🏗️ Architecture
 
-Testing
+This project follows **Hexagonal (Ports & Adapters)** architecture for modularity and separation of concerns.
 
-Agent usage & docs
-
-Project structure
-
-Notes, caveats & next steps
-
-Author
-
-License
-
-Project overview
-
-This project demonstrates a small compliance platform implementing Fuel EU Maritime concepts:
-
-Route management (routes, baseline selection)
-
-Baseline vs comparison analysis
-
-Compliance Balance (CB) calculation (Target intensity, energy scope)
-
-Article 20 — Banking: bank and apply surplus CB
-
-Article 21 — Pooling: pooling ships' CBs with validation and greedy allocation
-
-Frontend dashboard with tabs for each feature and visualizations (Recharts)
-
-The goal was to exhibit good domain modeling, separation of concerns (hexagonal architecture), testable use-cases, and documented AI-agent usage.
-
-Architecture
-
-Hexagonal / Ports & Adapters approach:
-
-backend/src/
-  core/              ← domain entities, use-cases (framework-agnostic)
+### 🧩 Backend (Node.js + TypeScript)
+```
+src/
+  core/                # Domain logic and entities
   adapters/
-    inbound/http/    ← Express controllers, routers (HTTP adapters)
-    outbound/postgres/ ← Prisma repositories (DB adapters)
+    inbound/http/      # Express controllers and routes
+    outbound/postgres/ # Prisma repositories (DB layer)
   infrastructure/
-    db/               ← Prisma client
-    server/           ← Express app bootstrap
-  shared/             ← shared types, constants
+    db/                # Prisma client and schema
+    server/            # Express app setup
+  shared/              # Constants and types
+```
 
-
-Frontend mirrors separation:
-
-frontend/src/
-  core/               ← domain models / pure logic (minimal)
+### 🎨 Frontend (React + Vite + TypeScript)
+```
+src/
+  core/                # Domain models and hooks
   adapters/
-    ui/               ← React components (tabs, pages)
-    infrastructure/   ← apiClient (axios) as outbound adapter
-  shared/             ← types
+    ui/                # React components and pages
+    infrastructure/    # Axios API client
+  shared/              # Common types
+```
 
+This architecture ensures:
+- The **core business logic** is independent of frameworks.
+- **Adapters** connect to infrastructure (HTTP, DB, UI).
+- Code remains easy to test and extend.
 
-This separation makes business logic independent from frameworks and easy to test.
+---
 
-Features
+## ⚙️ Features
 
-Frontend
+### 🛳️ Routes Tab
+- Fetch and display all shipping routes (`/routes`)
+- Columns: vessel type, fuel type, year, GHG intensity, emissions
+- “Set Baseline” button to mark a baseline route
 
-Routes tab: display routes, filters, set baseline
+### ⚖️ Compare Tab
+- Fetches `/routes/comparison`
+- Shows baseline vs comparison GHG intensities
+- Calculates **% difference** and compliance (`✅ / ❌`)
+- Interactive bar chart using **Recharts**
 
-Compare tab: baseline vs comparison table + bar chart
+### 💰 Banking Tab
+Implements **FuelEU Article 20 – Banking**
+- Fetch current **Compliance Balance (CB)**  
+- Bank surplus CB  
+- Apply stored CB to offset deficits  
+- Displays KPIs: `cb_before`, `applied`, `cb_after`
 
-Banking tab: compute CB, bank surplus, apply banked surplus
+### 🔗 Pooling Tab
+Implements **FuelEU Article 21 – Pooling**
+- Create a pool of ships sharing compliance surpluses
+- Ensures:  
+  - Σ (Adjusted CB) ≥ 0  
+  - Deficit ships can’t exit worse  
+  - Surplus ships can’t exit negative
+- Visual display of before/after CBs  
+- Green indicator for valid pool ✅  
 
-Pooling tab: create pools (validation, allocations), pool summary UI
+---
 
-Backend
+## 🧰 Tech Stack
 
-GET /routes — list routes
+| Layer | Technology |
+|-------|-------------|
+| **Frontend** | React, TypeScript, Vite, TailwindCSS, Recharts |
+| **Backend** | Node.js, Express, TypeScript, Prisma ORM |
+| **Database** | PostgreSQL |
+| **Styling** | TailwindCSS |
+| **Architecture** | Hexagonal (Ports & Adapters) |
+| **Tools** | ESLint, Prettier, ts-node-dev, GitHub, AI Agents |
 
-POST /routes/:id/baseline — set baseline route
+---
 
-GET /routes/comparison — baseline vs others with percentDiff and compliant
+## ⚙️ Setup — Backend
 
-GET /compliance/cb?shipId&year — compute & upsert CB
-
-GET /compliance/adjusted-cb?shipId&year — adjusted CB after banks (implementation detail)
-
-GET /compliance/banking/records?shipId&year — list bank entries
-
-POST /compliance/banking/bank — bank surplus
-
-POST /compliance/banking/apply — apply banked
-
-POST /pools — create pool (validation: sum CB >= 0; greedy allocation)
-
-Tech stack
-
-Frontend
-
-React (Vite + TypeScript)
-
-TailwindCSS
-
-Recharts
-
-Axios
-
-Backend
-
-Node.js + Express + TypeScript
-
-Prisma ORM
-
-PostgreSQL
-
-ts-node-dev for dev
-
-Tooling
-
-ESLint / Prettier (recommended)
-
-Git for version control
-
-Postman / curl for testing
-
-Getting started — prerequisites
-
-Node.js (v18+ recommended)
-
-npm (v8+)
-
-PostgreSQL (installed & running)
-
-Git
-
-Optional: psql CLI, Prisma Studio (comes with Prisma)
-
-Set up a local PostgreSQL database (example):
-
-DB name: fueleu
-
-User: postgres
-
-Password: (your password)
-
-Setup & run — Backend
-
-Open a terminal, go to backend folder:
-
+### 1️⃣ Install Dependencies
+```bash
 cd Backend
-
-
-Install dependencies:
-
 npm install
+```
 
+### 2️⃣ Create `.env`
+```env
+DATABASE_URL="postgresql://postgres:<PASSWORD>@localhost:5432/fueleu?schema=public"
+```
 
-Configure environment:
+### 3️⃣ Run Prisma Migrations
+```bash
+npx prisma generate
+npx prisma migrate dev --name init
+```
 
-Create Backend/.env with:
-
-DATABASE_URL=postgresql://postgres:<PASSWORD>@localhost:5432/fueleu?schema=public
-
-
-Replace <PASSWORD> with your postgres password. Use URL encoding for special characters (e.g. @ → %40).
-
-Generate Prisma client:
-
-npx prisma generate --schema=prisma/schema.prisma
-
-
-Create DB & run migration:
-
-npx prisma migrate dev --name init --schema=prisma/schema.prisma
-
-
-Seed routes (example seed script provided):
-
+### 4️⃣ Seed Data
+```bash
 npx ts-node prisma/seed.ts
+```
 
-
-Start backend (ensure the DATABASE_URL is available in env — on Windows you may set it in-session):
-
-# Windows (cmd)
-set DATABASE_URL=postgresql://postgres:<PASSWORD>@localhost:5432/fueleu?schema=public
+### 5️⃣ Start Backend
+```bash
 npm run dev
+```
 
-# macOS / Linux
-export DATABASE_URL="postgresql://postgres:<PASSWORD>@localhost:5432/fueleu?schema=public"
-npm run dev
+Backend runs at 👉 **http://localhost:4000**
 
+---
 
-Server default: http://localhost:4000
+## ⚙️ Setup — Frontend
 
-Setup & run — Frontend
-
-Open another terminal, go to frontend:
-
+### 1️⃣ Install Dependencies
+```bash
 cd Frontend
-
-
-Install dependencies:
-
 npm install
+```
 
-
-Start dev server:
-
+### 2️⃣ Start Dev Server
+```bash
 npm run dev
+```
 
+Frontend runs at 👉 **http://localhost:5173**
 
-Open the app (usually): http://localhost:5173
+Make sure your backend is running simultaneously.
 
-The frontend expects the backend at http://localhost:4000. If your backend runs on different host/port, update src/adapters/infrastructure/apiClient.ts baseURL.
+---
 
-Database & Prisma notes
+## 🗄️ Database & Prisma
 
-Prisma schema located at Backend/prisma/schema.prisma.
+**Prisma Models**
+- `routes` — Route data (id, routeId, vesselType, fuelType, year, ghgIntensity, etc.)
+- `ship_compliance` — Ship-year CB records
+- `bank_entries` — Banked surplus records
+- `pools` — Pool registry
+- `pool_members` — Pool participants with before/after CB
 
-Models:
+### CB Formula
+```
+CB = (TargetIntensity - ActualIntensity) × (FuelConsumption × 41,000)
+TargetIntensity(2025) = 89.3368 gCO₂e/MJ
+```
 
-Route
+---
 
-ShipCompliance (unique composite on [shipId, year])
+## 📡 API Reference
 
-BankEntry
+| Method | Endpoint | Description |
+|---------|-----------|-------------|
+| `GET` | `/routes` | Fetch all routes |
+| `POST` | `/routes/:id/baseline` | Set route as baseline |
+| `GET` | `/routes/comparison` | Baseline vs comparison data |
+| `GET` | `/compliance/cb?shipId&year` | Compute and return CB |
+| `POST` | `/compliance/banking/bank` | Bank surplus CB |
+| `POST` | `/compliance/banking/apply` | Apply banked surplus |
+| `POST` | `/pools` | Create compliance pool |
 
-Pool
+---
 
-PoolMember
+## 🧪 Testing
 
-Important: CB computation uses:
+### Backend
+```bash
+npm run test
+```
+*(Unit & integration tests recommended for core modules: CB calculation, Banking, Pooling)*
 
-TARGET_INTENSITY = 89.3368 gCO2e/MJ (target)
+### Manual API Testing
+Use **Postman** or browser to verify endpoints:
+1. `/routes` — list routes  
+2. `/routes/:id/baseline` — set baseline  
+3. `/routes/comparison` — compare data  
+4. `/compliance/cb?shipId&year` — check CB  
+5. `/pools` — create pool  
 
-ENERGY_PER_TONNE = 41_000 MJ/t
+---
 
-CB = (Target − Actual) * (fuelConsumption * 41_000)
+## 🧩 Project Structure
 
-CB upsert is used (no duplicate ship/year rows).
-
-Use npx prisma studio to view/edit DB during development.
-
-API reference (quick)
-
-Base: http://localhost:4000
-
-Routes
-
-GET /routes — list routes
-
-POST /routes/:id/baseline — set baseline by route numeric id
-
-GET /routes/comparison — returns baseline and comparisons
-
-Compliance & Banking
-
-GET /compliance/cb?shipId=<id>&year=<yyyy> — compute & upsert CB
-
-GET /compliance/adjusted-cb?shipId&year — adjusted CB after banks (if implemented)
-
-GET /compliance/banking/records?shipId&year — list bank entries
-
-POST /compliance/banking/bank — body { shipId, year, amount }
-
-POST /compliance/banking/apply — body { shipId, year, amount }
-
-Pools
-
-POST /pools — create pool
-Body:
-
-{
-  "year": 2024,
-  "members": [{"shipId":"R001"},{"shipId":"R002"}]
-}
-
-
-Validates sum(cb) >= 0, allocates surplus → deficits, persists pools and pool_members.
-
-Testing
-
-Unit tests (recommended): create tests for core use-cases (ComputeCB, BankSurplus, ApplyBanked, CreatePool).
-
-Integration tests: use Supertest to test Express endpoints.
-
-Manual testing:
-
-Use Postman / browser to call GET /routes
-
-Set baseline POST /routes/:id/baseline
-
-Compute CBs GET /compliance/cb?shipId=R001&year=2024
-
-Use Banking and Pooling endpoints as described
-
-Agent usage & docs
-
-This project used AI agents to speed up scaffolding and code suggestions. A separate AGENT_WORKFLOW.md documents:
-
-Agents used (Copilot, ChatGPT, etc.)
-
-Example prompts & outputs
-
-Validation steps and corrections
-
-Observations & best practices
-
-(Place it at repo root — reviewers should read it.)
-
-Project structure (high-level)
+```
 FuelEU-Maritime/
  ├── Backend/
  │   ├── src/
@@ -340,28 +233,34 @@ FuelEU-Maritime/
  ├── Frontend/
  │   ├── src/
  │   │   ├── adapters/ui/
- │   │   └── adapters/infrastructure/
+ │   │   ├── adapters/infrastructure/
+ │   │   └── core/
  │   ├── package.json
  │   └── vite.config.ts
  ├── README.md
  ├── AGENT_WORKFLOW.md
  └── REFLECTION.md
+```
 
-Notes, caveats & next steps
+---
 
-CORS: Backend currently allows * for dev ease. Lock this in production.
+## 🚧 Future Improvements
 
-Authentication: Not included — can be added (JWT / OAuth) for ship operators and admins.
+- Add authentication (admin / ship operator roles)
+- Add user-specific data filters and dashboards
+- Deploy using Docker and CI/CD pipelines
+- Add full Jest test coverage
+- Add charts to Banking & Pooling tabs
 
-Production: Add Dockerfile(s) and Docker Compose for PostgreSQL and app containers, CI/CD pipeline.
+---
 
-Validation: Pooling validation follows provided spec (sum CB >= 0). For demo/testing, adjust route intensities or include more surplus ships.
+## 👨‍💻 Author
 
-Testing: Add comprehensive unit/integration tests before submission.
+**Ayush Dubey**  
+🎓 MCA, Maulana Azad National Institute of Technology (MANIT), Bhopal  
+🌐 [GitHub](https://github.com/dubeyayush09)  
+📧 Email: `your.email@example.com`  
 
-Author
+---
 
-Ayush Dubey
-MCA — Maulana Azad National Institute of Technology (MANIT), Bhopal
-GitHub: https://github.com/dubeyayush09
-Email: dubeyayush09@gmail.com
+
