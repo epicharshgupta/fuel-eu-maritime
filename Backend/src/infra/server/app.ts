@@ -3,6 +3,8 @@ const dotenv = require("dotenv");
 const cors = require("cors"); // ✅ correct import
 import routesRouter from "../../adapters/inbound/http/routesRouter";
 import complianceRouter from "../../adapters/inbound/http/complianceRouter";
+import poolingRouter from "../../adapters/inbound/http/poolingRouter";
+
 
 dotenv.config(); // ✅ loads .env variables
 
@@ -17,5 +19,7 @@ app.get("/", (req, res) => {
 });
 app.use("/routes", routesRouter);
 app.use("/compliance", complianceRouter);
+app.use("/pools", poolingRouter);
+
 
 module.exports = app; // ✅ CommonJS export
