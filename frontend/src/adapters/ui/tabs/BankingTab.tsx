@@ -16,7 +16,7 @@ const BankingTab: React.FC = () => {
 
   const fetchCB = async () => {
     try {
-      const res = await api.get(`/compliance/cb?shipId=${shipId}&year=${year}`);
+      const res = await api.get(`/compliance/cb?shipId=${shipId}&year=${year}`);//adding api
       setCb(res.data.data);
       setMessage("Fetched current CB successfully!");
     } catch (err) {
