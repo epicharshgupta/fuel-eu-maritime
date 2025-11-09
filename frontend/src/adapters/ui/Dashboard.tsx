@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import RoutesTab from "./tabs/RoutesTab";
 import CompareTab from "./tabs/CompareTab";
 import BankingTab from "./tabs/BankingTab";
-// import PoolingTab from "./tabs/PoolingTab";
+import PoolingTab from "./tabs/PoolingTab";
 
 const Dashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState("routes");
@@ -40,7 +40,7 @@ const Dashboard: React.FC = () => {
         {activeTab === "routes" && <RoutesTab />}
          {activeTab === "compare" && <CompareTab />}
         {activeTab === "banking" && <BankingTab />}
-        {/* {activeTab === "pooling" && <PoolingTab />}  */}
+        {activeTab === "pooling" && <PoolingTab />} 
       </div>
     </div>
   );
