@@ -42,7 +42,7 @@ const CompareTab: React.FC = () => {
     fetchComparison();
   }, []);
 
-  if (loading) return <p>Loading comparison data...</p>;
+  if (loading) return <p>Loading Comparison data...</p>;
 
   return (
     <div>
